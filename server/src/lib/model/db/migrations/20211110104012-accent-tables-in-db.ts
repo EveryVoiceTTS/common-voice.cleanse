@@ -1,4 +1,4 @@
-export const ACCENTS: any = {
+const ACCENTS: any = {
   br: {
     gwenedeg: 'Gwenedeg',
     kerneveg: 'Kerneveg',
@@ -244,22 +244,47 @@ export const ACCENTS: any = {
   },
 };
 
-export const AGES = {
-  '': '',
-  teens: '< 19',
-  twenties: '19 - 29',
-  thirties: '30 - 39',
-  fourties: '40 - 49',
-  fifties: '50 - 59',
-  sixties: '60 - 69',
-  seventies: '70 - 79',
-  eighties: '80 - 89',
-  nineties: '> 89',
+export const up = async function (db: any): Promise<any> {
+  await db.runSql(
+    `
+    CREATE TABLE accents (
+      id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+
+      locale_id INT NOT NULL,
+      accent_name VARCHAR(255) CHARSET utf8mb4 NOT NULL,
+      accent_token VARCHAR(255) CHARSET utf8mb4 DEFAULT NULL,
+      user_submitted BOOLEAN DEFAULT FALSE,
+      client_id CHAR(36),
+      approved BOOLEAN DEFAULT FALSE,
+      created_at DATETIME DEFAULT NOW(),
+
+      FOREIGN KEY (client_id) REFERENCES user_clients(client_id) ON DELETE SET NULL,
+      FOREIGN KEY (locale_id) REFERENCES locales(id),
+      UNIQUE KEY accent_key (locale_id, accent_name)
+    )
+    `
+  );
+
+  await db.runSql(`
+    INSERT INTO accents (locale_id, accent_name, accent_token, user_submitted)
+      SELECT id, "", "unspecified", 0 from locales;
+  `);
+
+  // migrate legacy accents
+  for (const language in ACCENTS) {
+    const [row] = await db.runSql(
+      `SELECT id FROM locales WHERE name = "${language}"`
+    );
+
+    for (const accent_token in ACCENTS[language]) {
+      await db.runSql(`
+        INSERT INTO accents (locale_id, accent_name, accent_token)
+          VALUES (${row.id}, "${ACCENTS[language][accent_token]}", "${accent_token}")
+      `);
+    }
+  }
 };
 
-export const GENDERS = {
-  '': '',
-  male: 'Male',
-  female: 'Female',
-  other: 'Other',
+export const down = async function (db: any): Promise<any> {
+  return await db.runSql(`DROP TABLE accents`);
 };
