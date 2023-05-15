@@ -84,9 +84,7 @@ async function importLocaleSentences(
   version: number
 ) {
   await pool.query('INSERT IGNORE INTO locales (name) VALUES (?)', [locale]);
-  const [
-    [{ localeId }],
-  ] = await pool.query(
+  const [[{ localeId }]] = await pool.query(
     'SELECT id AS localeId FROM locales WHERE name = ? LIMIT 1',
     [locale]
   );
@@ -154,18 +152,19 @@ export async function importSentences(pool: any) {
     (await useRedis) ? await redis.get('sentences-version') : 0
   );
   const version = ((oldVersion || 0) + 1) % 256; //== max size of version column
-  const locales = ((await new Promise(resolve =>
-     fs.readdir(
-        SENTENCES_FOLDER,
-        {withFileTypes: true},
-        (_, names) =>
-           resolve(
-              names
-              .filter(dirent => dirent.isDirectory())
-              .map(dirent => dirent.name))
-     )
-  )) as string[]).filter(name => name !== 'LICENSE');
+  const locales = (
+    (await new Promise(resolve =>
+      fs.readdir(SENTENCES_FOLDER, { withFileTypes: true }, (_, names) =>
+        resolve(
+          names
+            .filter(dirent => dirent.isDirectory())
+            .map(dirent => dirent.name)
+        )
+      )
+    )) as string[]
+  ).filter(name => name !== 'LICENSE');
 
+  print("sentence's version:", version);
   print('locales', locales.join(','));
 
   for (const locale of locales) {
