@@ -2,7 +2,16 @@ import * as Redis from 'ioredis';
 import * as Redlock from 'redlock';
 import { getConfig } from '../config-helper';
 
-export const redis = new Redis(getConfig().REDIS_URL);
+// [connecting to AWS ElasticCache](https://github.com/luin/ioredis/issues/689#issuecomment-442366445)
+export const redis = new Redis({
+   host: getConfig().REDIS_URL,
+   port: 6379,
+   tls: {
+      rejectUnauthorized: false,
+      // https://stackoverflow.com/a/69758100
+      //checkServerIdentity: () => undefined,
+   },
+});
 
 export const redlock = new Redlock([redis], { retryCount: -1 });
 
