@@ -74,6 +74,7 @@ export default class Server {
       if (ready) {
         this.taskQueues = createTaskQueues(this.api.takeout);
         this.api.takeout.setQueue(this.taskQueues.dataTakeout);
+        this.print('Using Redis');
       }
     });
 

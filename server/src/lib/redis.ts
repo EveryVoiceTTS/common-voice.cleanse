@@ -8,9 +8,11 @@ export const redlock = new Redlock([redis], { retryCount: -1 });
 
 export const useRedis = new Promise(resolve => {
   redis.on('ready', () => {
+    console.log('useRedis: Using Redis');
     resolve(true);
   });
   redis.on('error', err => {
+    console.log(`ERROR: Redis failed to connect to ${getConfig().REDIS_URL} with error: ${err}`);
     resolve(false);
     return redis.quit();
   });

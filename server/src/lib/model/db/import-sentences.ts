@@ -148,6 +148,7 @@ async function importLocaleSentences(
 }
 
 export async function importSentences(pool: any) {
+  print("Using Redis:", (await useRedis));
   const oldVersion = Number(
     (await useRedis) ? await redis.get('sentences-version') : 0
   );
