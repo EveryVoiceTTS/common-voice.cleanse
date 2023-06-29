@@ -319,6 +319,27 @@ export default class Clip {
                 .on('finish', async () => {
                    console.log(`clip written to s3 ${metadata}`);
 
+                   node_fs_promises.readdir(tmpdir)
+                      .then((files: any) => {
+                         console.log(`Listing files in ${tmpdir}`);
+                         for (const filename of files)
+                            console.log(filename);
+                      });
+
+                   node_fs_promises.open(path)
+                      .then(function(output: any) {
+                         console.log(`Sending ${path} to S3`);
+                         return self.s3
+                            .upload({
+                               Bucket: config.CLIP_BUCKET_NAME,
+                               Key: clipFileName,
+                               Body: output.createReadStream(),
+                            })
+                            .promise()
+                            .then((d: any) => console.log("Done uploading to S3"));
+                      });
+
+                   console.log("self.model.saveClip()");
                    await self.model.saveClip({
                       client_id: client_id,
                       localeId: sentence.locale_id,
@@ -326,6 +347,7 @@ export default class Clip {
                       path: clipFileName,
                       sentence: sentence.text,
                    });
+                   console.log("Awards.checkProgress()");
                    await Awards.checkProgress(client_id, { id: sentence.locale_id });
 
                    await checkGoalsAfterContribution(client_id, {
@@ -363,23 +385,6 @@ export default class Clip {
                 })
              .writeToFile(path);
 
-             /*
-             var dir = await node_fs_promises.opendir(tmpdir);
-             for await (const dirent of dir)
-                console.log(dirent.name);
-              */
-
-             console.log(`Sending ${path} to S3`);
-             node_fs_promises.open(path)
-                .then(function(output: any) {
-                   return this.s3
-                      .upload({
-                         Bucket: config.CLIP_BUCKET_NAME,
-                         Key: clipFileName,
-                         Body: output.createReadStream(),
-                      })
-                      .promise();
-                });
           });
     }
   };
