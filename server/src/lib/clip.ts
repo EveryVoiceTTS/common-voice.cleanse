@@ -14,19 +14,14 @@ import { ClientParameterError, ServerError } from './utility';
 import Awards from './model/awards';
 import { checkGoalsAfterContribution } from './model/goals';
 import { ChallengeToken, challengeTokens } from 'common';
-//import { Blob } from 'buffer';
-//import { Blob } from 'node:buffer';
-//const buffffer = require('node:buffer');
-//import { mkdtemp } from 'node:fs/promises';
 
 
 
 const Transcoder = require('stream-transcoder');
 const { Converter } = require('ffmpeg-stream');
 const { Readable } = require('stream');
-//const node_fs = require('node:fs');
-var node_fs_promises = require('node:fs/promises');
-var os = require( 'node:os');
+const node_fs_promises = require('node:fs/promises');
+const os = require( 'node:os');
 
 
 enum ERRORS {
@@ -242,35 +237,7 @@ export default class Clip {
         .putObject({ Bucket: config.CLIP_BUCKET_NAME, Key: folder })
         .promise();
 
-      //let delme = new buffffer.Blob(request.body);
-      //console.log(request);
       let audioInput = request;
-      //const buffer = request.body;
-      //let audioInput = new Blob([buffer], {type: "application/octet-stream"})
-      //let audioInput = new Blob([buffer], {type: 'audio/wav'})
-      //var fs = require("fs");
-      //var stream = require('stream');
-      //const rs = fs.createReadStream(request);
-      //import { mkdtemp } from 'node:fs/promises';
-
-
-      if (false) {
-         await this.s3
-            .upload({
-               Bucket: config.CLIP_BUCKET_NAME,
-               Key: clipFileName + "RAW",
-               Body: audioInput,
-            })
-            .promise();
-      }
-
-       if (false) {
-          const fs = require('fs');
-          const fsPromises = require('fs').promises;
-          await fsPromises.writeFile("movies.txt", audioInput);
-          const content = await fsPromises.readFile("movies.txt");
-          console.log(content);
-       }
 
       if (config.FLAG_BUFFER_STREAM_ENABLED && format.includes('aac')) {
         // aac data comes wrapped in an mpeg container, which is incompatible with
@@ -303,8 +270,6 @@ export default class Clip {
                 .format(config.TRANSCODE.FORMAT)
                 .channels(1)
                 //.sampleRate(config.TRANSCODE.SAMPLE_RATE)
-                //.custom('c:a', 'pcm_s16le')   // Handled by .audioCodec()
-                //.custom('f', 'wav')   // Handled by .format()
                 .on('error', (error: string) => {
                    self.clipSaveError(
                       headers,
@@ -317,22 +282,22 @@ export default class Clip {
                    return;
                 })
                 .on('finish', async () => {
-                   console.log(`clip written to s3 ${metadata}`);
-
-                   if (true) {
-                      const files = await node_fs_promises.readdir(tmpdir);
-                      console.log(`Listing files in ${tmpdir}`);
-                      for await (const filename of files) {
-                         console.log(filename);
+                   if (false) {
+                      if (true) {
+                         const files = await node_fs_promises.readdir(tmpdir);
+                         console.log(`Listing files in ${tmpdir}`);
+                         for await (const filename of files) {
+                            console.log(filename);
+                         }
                       }
-                   }
-                   else {
-                      node_fs_promises.readdir(tmpdir)
-                         .then((files: any) => {
-                            console.log(`Listing files in ${tmpdir}`);
-                            for (const filename of files)
-                               console.log(filename);
-                         });
+                      else {
+                         node_fs_promises.readdir(tmpdir)
+                            .then((files: any) => {
+                               console.log(`Listing files in ${tmpdir}`);
+                               for (const filename of files)
+                                  console.log(filename);
+                            });
+                      }
                    }
 
                    if (true) {
@@ -345,6 +310,7 @@ export default class Clip {
                             Body: output.createReadStream(),
                          })
                          .promise();
+                      console.log(`clip written to s3 ${metadata}`);
                    }
                    else {
                       node_fs_promises.open(path)
@@ -357,8 +323,8 @@ export default class Clip {
                                   Body: output.createReadStream(),
                                })
                                .promise()
-                               .then((d: any) => console.log("Done uploading to S3"));
-                         });
+                         })
+                         .then((d: any) => console.log(`clip written to s3 ${metadata}`));
                    }
 
                    await self.model.saveClip({
