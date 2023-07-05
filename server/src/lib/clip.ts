@@ -21,7 +21,7 @@ const Transcoder = require('stream-transcoder');
 const { Converter } = require('ffmpeg-stream');
 const { Readable } = require('stream');
 const node_fs_promises = require('node:fs/promises');
-const os = require( 'node:os');
+const os = require('node:os');
 
 
 enum ERRORS {
@@ -282,50 +282,16 @@ export default class Clip {
                    return;
                 })
                 .on('finish', async () => {
-                   if (false) {
-                      if (true) {
-                         const files = await node_fs_promises.readdir(tmpdir);
-                         console.log(`Listing files in ${tmpdir}`);
-                         for await (const filename of files) {
-                            console.log(filename);
-                         }
-                      }
-                      else {
-                         node_fs_promises.readdir(tmpdir)
-                            .then((files: any) => {
-                               console.log(`Listing files in ${tmpdir}`);
-                               for (const filename of files)
-                                  console.log(filename);
-                            });
-                      }
-                   }
-
-                   if (true) {
-                      const output = await node_fs_promises.open(path);
-                      console.log(`Sending ${path} to S3`);
-                      await self.s3
-                         .upload({
-                            Bucket: config.CLIP_BUCKET_NAME,
-                            Key: clipFileName,
-                            Body: output.createReadStream(),
-                         })
-                         .promise();
-                      console.log(`clip written to s3 ${metadata}`);
-                   }
-                   else {
-                      node_fs_promises.open(path)
-                         .then(function(output: any) {
-                            console.log(`Sending ${path} to S3`);
-                            return self.s3
-                               .upload({
-                                  Bucket: config.CLIP_BUCKET_NAME,
-                                  Key: clipFileName,
-                                  Body: output.createReadStream(),
-                               })
-                               .promise()
-                         })
-                         .then((d: any) => console.log(`clip written to s3 ${metadata}`));
-                   }
+                   const output = await node_fs_promises.open(path);
+                   console.log(`Sending ${path} to S3`);
+                   await self.s3
+                      .upload({
+                         Bucket: config.CLIP_BUCKET_NAME,
+                         Key: clipFileName,
+                         Body: output.createReadStream(),
+                      })
+                      .promise();
+                   console.log(`clip written to s3 ${clipFileName}`);
 
                    await self.model.saveClip({
                       client_id: client_id,
