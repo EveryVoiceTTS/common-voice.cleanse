@@ -20,8 +20,9 @@ import { ChallengeToken, challengeTokens } from 'common';
 const Transcoder = require('stream-transcoder');
 const { Converter } = require('ffmpeg-stream');
 const { Readable } = require('stream');
-const node_fs_promises = require('node:fs/promises');
+const fs_promises = require('node:fs/promises');
 const os = require('node:os');
+
 
 
 enum ERRORS {
@@ -258,9 +259,9 @@ export default class Clip {
        }
 
       var self = this;
-      node_fs_promises.mkdtemp(os.tmpdir() + `/${client_id}_${filePrefix}`)
-          .then(function(tmpdir: string) {
-             const path = tmpdir + `/output.${config.TRANSCODE.FORMAT}`;
+      fs_promises.mkdtemp(os.tmpdir() + `/${client_id}_${filePrefix}`)
+          .then(function(tmp_dir_name: string) {
+             const path = tmp_dir_name + `/output.${config.TRANSCODE.FORMAT}`;
              console.log(path);
 
              console.log("HEADERS: ", JSON.stringify(headers));
@@ -282,7 +283,7 @@ export default class Clip {
                    return;
                 })
                 .on('finish', async () => {
-                   const output = await node_fs_promises.open(path);
+                   const output = await fs_promises.open(path, 'r');
                    console.log(`Sending ${path} to S3`);
                    await self.s3
                       .upload({
