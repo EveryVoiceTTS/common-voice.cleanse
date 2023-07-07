@@ -20,8 +20,8 @@ import { ChallengeToken, challengeTokens } from 'common';
 const Transcoder = require('stream-transcoder');
 const { Converter } = require('ffmpeg-stream');
 const { Readable } = require('stream');
-const fs_promises = require('node:fs/promises');
-const os = require('node:os');
+import { promises } from 'fs';
+import { tmpdir } from 'os';
 
 
 
@@ -259,7 +259,7 @@ export default class Clip {
        }
 
       var self = this;
-      fs_promises.mkdtemp(os.tmpdir() + `/${client_id}_${filePrefix}`)
+      promises.mkdtemp(tmpdir() + `/${client_id}_${filePrefix}`)
           .then(function(tmp_dir_name: string) {
              const path = tmp_dir_name + `/output.${config.TRANSCODE.FORMAT}`;
              console.log(path);
@@ -283,13 +283,11 @@ export default class Clip {
                    return;
                 })
                 .on('finish', async () => {
-                   const output = await fs_promises.open(path, 'r');
-                   console.log(`Sending ${path} to S3`);
                    await self.s3
                       .upload({
                          Bucket: config.CLIP_BUCKET_NAME,
                          Key: clipFileName,
-                         Body: output.createReadStream(),
+                         Body: await promises.readFile(path),
                       })
                       .promise();
                    console.log(`clip written to s3 ${clipFileName}`);
