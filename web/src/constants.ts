@@ -1,5 +1,5 @@
 export const DAILY_GOALS = Object.freeze({
-  speak: [200, 500],
+  speak: [300, 600],
   listen: [400],
 });
 
