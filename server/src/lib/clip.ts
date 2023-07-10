@@ -22,6 +22,7 @@ const { Converter } = require('ffmpeg-stream');
 const { Readable } = require('stream');
 import { promises } from 'fs';
 import { tmpdir } from 'os';
+import { join } from 'path';
 
 
 
@@ -259,7 +260,7 @@ export default class Clip {
        }
 
       var self = this;
-      promises.mkdtemp(tmpdir() + `/${client_id}_${filePrefix}`)
+      promises.mkdtemp(join(tmpdir(), `${client_id}_${filePrefix}`))
           .then(function(tmp_dir_name: string) {
              const path = tmp_dir_name + `/output.${config.TRANSCODE.FORMAT}`;
              console.log(path);
@@ -289,8 +290,18 @@ export default class Clip {
                          Key: clipFileName,
                          Body: await promises.readFile(path),
                       })
-                      .promise();
-                   console.log(`clip written to s3 ${clipFileName}`);
+                      .promise()
+                      .then(_ => console.log(`clip written to s3 ${clipFileName}`))
+                      .catch((error: string) => {
+                         self.clipSaveError(
+                            headers,
+                            response,
+                            500,
+                            `${error} for ${clipFileName}`,
+                            `s3 ${error}`,
+                            'clip'
+                         )}
+                      );
 
                    await self.model.saveClip({
                       client_id: client_id,
