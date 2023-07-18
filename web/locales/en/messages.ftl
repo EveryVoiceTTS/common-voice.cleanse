@@ -42,6 +42,7 @@ ca = Catalan
 cak = Kaqchikel
 ckb = Central Kurdish
 cnh = Hakha Chin
+crk = NÊHIYAWÊWIN
 co = Corsican
 cs = Czech
 cv = Chuvash
