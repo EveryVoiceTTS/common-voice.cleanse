@@ -1,4 +1,4 @@
-import json, os
+import json, os, shutil
 
 def main():
     # insert your ISO code and dropdown description
@@ -48,7 +48,7 @@ def add_iso_to_list(iso, filename, des=""):
             locales.append(iso)
         else:
             locales[iso] = des
-        json.dump(locales,open(filename, "w"),indent=2)
+        json.dump(sorted(locales),open(filename, "w"),indent=2, ensure_ascii=False)
         print("{} added to {}.".format(iso, filename))
     else:
         print("{} already in {}. Skipping.".format(iso, filename))
@@ -56,7 +56,7 @@ def add_iso_to_list(iso, filename, des=""):
 
 def copyfile(iso, filename):
     if not os.path.isfile("web/locales/{}/{}".format(iso,filename)):
-        open("web/locales/{}/{}".format(iso,filename), "w").write(open("web/locales/en/{}".format(filename), "r").read())
+        shutil.copyfile("web/locales/en/{}".format(filename),"web/locales/{}/{}".format(iso,filename))
         print("web/locales/{}/{} created and populated.".format(iso,filename))
     else:
         print("web/locales/{}/{} already created. Skipping.".format(iso,filename))
