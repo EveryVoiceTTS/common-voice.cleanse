@@ -17,6 +17,7 @@ not-available-abbreviation = N/A
 # Don't rename the following section, its contents are auto-inserted based on the name (see scripts/pontoon-languages-to-ftl.js)
 # [Languages]
 ## Languages
+orn = Ohsweken Natural Speech Set
 ore = Ohsweken Edu/Careful Speech Set
 aaa = SENĆOŦEN Origin Stories
 aab = Kanyen'kéha (Ohswekèn:'a) moo-Latest
