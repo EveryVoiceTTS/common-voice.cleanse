@@ -2,7 +2,7 @@ import json, os, shutil
 
 def main():
     # insert your ISO code and dropdown description
-    lang_info = {"ISO":"", "description":""}
+    lang_info = {"ISO":"orn", "description":"Ohsweken Natural Speech Set"}
 
     # Visit https://github.com/EveryVoiceTTS/common-voice and make sure you are on branch dev/ilt;
     # Add str to locales/all.json in order to get that new language to show up in the UI's top-right dropdown box;
@@ -46,9 +46,12 @@ def add_iso_to_list(iso, filename, des=""):
     if iso not in locales:
         if not des:
             locales.append(iso)
+            locales = sorted(locales)
         else:
             locales[iso] = des
-        json.dump(sorted(locales),open(filename, "w"),indent=2, ensure_ascii=False)
+            locales = dict(sorted(locales.items()))
+
+        json.dump(locales,open(filename, "w"),indent=2, ensure_ascii=False)
         print("{} added to {}.".format(iso, filename))
     else:
         print("{} already in {}. Skipping.".format(iso, filename))
