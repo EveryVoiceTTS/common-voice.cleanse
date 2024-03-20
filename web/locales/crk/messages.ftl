@@ -17,6 +17,7 @@ not-available-abbreviation = N/A
 # Don't rename the following section, its contents are auto-inserted based on the name (see scripts/pontoon-languages-to-ftl.js)
 # [Languages]
 ## Languages
+crl = nêhiyawêwin short
 orn = Ohswekèn:’a Natural Speech Set
 ore = Ohswekèn:’a Edu/Careful Speech Set
 aaa = SENĆOŦEN Origin Stories
