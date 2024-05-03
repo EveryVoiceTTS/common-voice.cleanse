@@ -58,6 +58,16 @@ enum RecordingError {
   TOO_QUIET = 'TOO_QUIET',
 }
 
+const EducationalPrompt = (props:any) => (
+  <div>
+    <ol>
+      <li>read sentence normally</li>
+      <li>wait 3-5 seconds</li>
+      <li>repeat sentence slower and more carefully (as if directed towards a student who did not hear properly)</li>
+    </ol>
+  </div>
+);
+
 const UnsupportedInfo = () => (
   <div className="empty-container">
     <div className="error-card card-dimensions unsupported">
@@ -707,6 +717,7 @@ class SpeakPage extends React.Component<Props, State> {
                   elems={{
                     recordIcon: <MicIcon />,
                     stopIcon: <StopIcon />,
+                    educationalPrompt: <EducationalPrompt/>,
                   }}
                   {...props}
                 />
