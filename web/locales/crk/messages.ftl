@@ -18,8 +18,7 @@ not-available-abbreviation = N/A
 # [Languages]
 ## Languages
 crl = nêhiyawêwin short
-orn = Ohswekèn:’a Natural Speech Set
-ore = Ohswekèn:’a Edu/Careful Speech Set
+ore = Ohswekèn:’a Natural & Careful Speech Set
 aaa = SENĆOŦEN Origin Stories
 aab = Kanyen'kéha (Ohswekèn:'a) moo-Latest
 aac = Kanien’kéha (Kahnawa’kéha) test set
