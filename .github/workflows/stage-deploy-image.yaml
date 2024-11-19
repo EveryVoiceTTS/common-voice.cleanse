@@ -37,8 +37,9 @@ jobs:
           IMAGE_TAG: stage-${{ github.sha }}
         run: |
           echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-          CURRENT_UID=$(id -u):$(id -g) docker-compose --project-name "common-voice" -f "docker-compose.yaml" build web
-          docker tag common-voice_web:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          CURRENT_UID=$(id -u):$(id -g) docker compose --project-name "common-voice" -f "docker-compose.yaml" build web
+          docker image ls
+          docker tag common-voice-web:latest $REGISTRY/$REPOSITORY:$IMAGE_TAG
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: Repository dispatch to trigger deployment
