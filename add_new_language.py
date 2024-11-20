@@ -2,7 +2,7 @@ import json, os, shutil
 
 def main():
     # insert your ISO code and dropdown description
-    lang_info = {"ISO":"orm", "description":"Kanien’kéha Medium Speed"}
+    lang_info = {"ISO":"aam", "description":"Kanien'kéha Medium Speed"}
 
     # Visit https://github.com/EveryVoiceTTS/common-voice and make sure you are on branch dev/ilt;
     # Add str to locales/all.json in order to get that new language to show up in the UI's top-right dropdown box;

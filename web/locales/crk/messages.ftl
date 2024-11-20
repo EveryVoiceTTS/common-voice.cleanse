@@ -17,7 +17,7 @@ not-available-abbreviation = N/A
 # Don't rename the following section, its contents are auto-inserted based on the name (see scripts/pontoon-languages-to-ftl.js)
 # [Languages]
 ## Languages
-orm = Kanien’kéha Medium Speed
+orm = Ohsweken Medium Speed
 crl = nêhiyawêwin short
 ore = Ohswekèn:’a Natural & Careful Speech Set
 aaa = SENĆOŦEN Origin Stories
