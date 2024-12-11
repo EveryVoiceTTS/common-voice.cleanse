@@ -17,6 +17,7 @@ not-available-abbreviation = N/A
 # Don't rename the following section, its contents are auto-inserted based on the name (see scripts/pontoon-languages-to-ftl.js)
 # [Languages]
 ## Languages
+afp = Kanien'kéha Long Passages
 sts = SENĆOŦEN Special Words and Paragraphs
 aam = Kanien'kéha Medium Speed
 orm = Ohsweken Medium Speed
